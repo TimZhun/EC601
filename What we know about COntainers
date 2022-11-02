@@ -1,0 +1,8 @@
+#Run script in container
+docker exec <container ID> pip list 
+docker exec cf46f5374e48 python --version
+docker container top cf46f5374e48 
+
+#What is running inside
+docker container top c91ffc716fa4
+

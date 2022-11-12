@@ -1,10 +1,27 @@
 import os
-
+import sys
 import nvdlib
 
 def checkCVE(searchWord):
-    r = nvdlib.searchCPE(keyword=searchWord)
-    print(r)
+    cve_item = nvdlib.searchCVE(keyword=searchWord, exactMatch = False)
+
+    for each in cve_item:        
+        print('Potential threat: ',each.id)
+        print('Score ',each.score)
+        print('URL ',each.url)
+
+
+def checkCVE2():
+    # r = nvdlib.searchCVE(cpeName = 'cpe:2.3:a:microsoft:exchange_server:2013:cumulative_update_11:*:*:*:*:*:*', keyword = '1ArcServe', )
+    cve_item = nvdlib.searchCVE(keyword = 'httpd 2.4.50', exactMatch = False)
+    dict = []
+    dict.append(cve_item)
+    for each in cve_item:
+        for i in each:
+
+         print('Potential threat: ',i)
+
+
 
 def readDockerFile(path):
     with open(path,"r") as fi:
@@ -65,7 +82,26 @@ def readDockerFile(path):
  
 
 # checkCVE('httpd 2.4.50')
-check = readDockerFile("/Users/timurzhunusov/Downloads/vulhub-master/httpd/CVE-2021-42013/Dockerfile")
+# check = readDockerFile("/Users/timurzhunusov/Downloads/vulhub-master/httpd/CVE-2021-42013/Dockerfile")
 # check = readDockerFile("/Users/timurzhunusov/Documents/GitHub/EC601/Scripts/dockerfile_examples/CentosHttpd")
+# /Users/timurzhunusov/Downloads/vulhub-master/base/php/5.4.1/cgi/
 
-checkCVE(check)
+# checkCVE(check)
+# checkCVE2()
+
+
+def main():
+    
+    print("Type the path to Docker Container")
+    path=input()
+    dir_list = os.listdir(path)
+    for each in dir_list:
+        if (each == 'Dockerfile'):
+            dockerfile = each
+    final_path = (path+dockerfile)
+    check = readDockerFile(final_path)
+    checkCVE(check)
+
+
+if __name__ == '__main__':
+ main()

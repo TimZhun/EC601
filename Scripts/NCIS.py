@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 import nvdlib
 
@@ -69,6 +70,9 @@ def readDockerFile(path):
         print("Exposed port:", exposed[0])
     else:
         print("No exposed ports")
+    print("Ports used by Docker right now:")
+    os.system("docker ps")
+    print(" ")
 
     print("Running software:", result)
     print("Possible CVE Vulnerabilities:")
@@ -105,3 +109,4 @@ def main():
 
 if __name__ == '__main__':
  main()
+

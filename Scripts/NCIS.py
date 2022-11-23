@@ -1,8 +1,9 @@
 import os
 import subprocess
+import time
 import sys
 import nvdlib
-
+# Checks in CVE database
 def checkCVE(searchWord):
     cve_item = nvdlib.searchCVE(keyword=searchWord, exactMatch = False)
 
@@ -10,8 +11,10 @@ def checkCVE(searchWord):
         print('Potential threat: ',each.id)
         print('Score ',each.score)
         print('URL ',each.url)
+    if not cve_item:
+        print("Nothing found")
 
-
+# Second check for testing
 def checkCVE2():
     # r = nvdlib.searchCVE(cpeName = 'cpe:2.3:a:microsoft:exchange_server:2013:cumulative_update_11:*:*:*:*:*:*', keyword = '1ArcServe', )
     cve_item = nvdlib.searchCVE(keyword = 'httpd 2.4.50', exactMatch = False)
@@ -23,7 +26,7 @@ def checkCVE2():
          print('Potential threat: ',i)
 
 
-
+# Reads DockerFile
 def readDockerFile(path):
     with open(path,"r") as fi:
         id = []
@@ -69,7 +72,7 @@ def readDockerFile(path):
     if exposed:
         print("Exposed port:", exposed[0])
     else:
-        print("No exposed ports")
+        print("No ports assigned in Dockerfile, please check for opened ports")
     print("Ports used by Docker right now:")
     os.system("docker ps")
     print(" ")
@@ -78,6 +81,33 @@ def readDockerFile(path):
     print("Possible CVE Vulnerabilities:")
     return(result)
 
+# Calling docker pull and then scanning
+def pulldocker(docekrcontainer):
+    os.system("docker pull " + docekrcontainer)
+    cmd = subprocess.Popen('docker image history '+docekrcontainer+' --format \"table{{.CreatedBy}}\" --no-trunc', shell=True, stdout=subprocess.PIPE)
+    # print(cmd.stdout)
+    hExpose = []
+    hVersion = []
+    for line in cmd.stdout:
+        if (bytes("EXPOSE", 'utf-8') in line):
+            hExpose = line[26:].decode("utf-8")
+            
+        if (bytes("/bin/sh -c #(nop)  ENV ", 'utf-8') in line):
+            if (bytes("_VERSION", 'utf-8') in line):
+                hVersion.append(line[23:].decode("utf-8") )
+                
+    
+    finalVersion = []
+    for rows in hVersion:
+        index = rows.find ( "_VERSION" )
+        index2 = rows.find(".el8\n")
+        if index > 0:
+            finalVersion.append(rows[:index]+" "+rows[index+9:index2])
+    print("Exposed ports: ",hExpose)
+    for soft in finalVersion:
+        print("Vulnerabilies for: ",soft)
+        checkCVE(soft)
+        time.sleep(5)
 
 # os.system("docker history python")
 # os.system("docker history python > HistoryFile.txt ")
@@ -95,17 +125,32 @@ def readDockerFile(path):
 
 
 def main():
-    
-    print("Type the path to Docker Container")
-    path=input()
-    dir_list = os.listdir(path)
-    for each in dir_list:
-        if (each == 'Dockerfile'):
-            dockerfile = each
-    final_path = (path+dockerfile)
-    check = readDockerFile(final_path)
-    checkCVE(check)
+    print("Please press a for scaning a folder")
+    print("Please press b for scanning dockerhub container")
+    x = input()
+    print(x)
+    if x == "a":
+        print("Type the path to Docker Container")
+        path=input()
+        dir_list = os.listdir(path)
+        goodcheck = 0
+        for each in dir_list:
+            if (each == 'Dockerfile'):
+                dockerfile = each
+                goodcheck = 1
+        if (goodcheck):
+            final_path = (path+dockerfile)
+            check = readDockerFile(final_path)
+            checkCVE(check)
+        else:
+            print("Couldnt find Dockerfile in directory",path);
+    if x == "b":
+        print("Please enter the name of dockercontainer")
+        container = input()
 
+        pulldocker(container)
+    # if (x != "a") or (x != "b"):
+    #     print("Something went wrong :(")
 
 if __name__ == '__main__':
  main()

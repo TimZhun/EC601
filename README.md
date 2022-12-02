@@ -1,9 +1,9 @@
 **Installation/Requirements**
 
-Docker version 4 or higher
-Python version 3
-NVDLIB library
-- pip install nvdlib
+Docker version 4 or higher<br />
+Python version 3<br />
+NVDLIB library<br />
+- pip install nvdlib<br />
 run NCIS.py python script
 
 **Problem Statement/Applications**

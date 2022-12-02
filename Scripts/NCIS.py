@@ -6,7 +6,6 @@ import nvdlib
 
 API_KEY = os.getenv("GITGUARDIAN_API_KEY", "")
 FILENAME = ".env"
-API_KEY="91Fa973FaC8fAadEc478726def6d9C0Aedf3Aa1049eaDa397C8aC5B6c13dDd1586d665d"
 DOCUMENT = """
     import urllib.request
     url = 'http://jen_barber:correcthorsebatterystaple@cake.gitguardian.com/isreal.json'

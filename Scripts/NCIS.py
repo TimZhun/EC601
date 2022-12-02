@@ -3,9 +3,20 @@ import subprocess
 import time
 import sys
 import nvdlib
+
+API_KEY = os.getenv("GITGUARDIAN_API_KEY", "")
+FILENAME = ".env"
+API_KEY="91Fa973FaC8fAadEc478726def6d9C0Aedf3Aa1049eaDa397C8aC5B6c13dDd1586d665d"
+DOCUMENT = """
+    import urllib.request
+    url = 'http://jen_barber:correcthorsebatterystaple@cake.gitguardian.com/isreal.json'
+    response = urllib.request.urlopen(url)
+    consume(response.read())"
+"""
+
 # Checks in CVE database
 def checkCVE(searchWord):
-    cve_item = nvdlib.searchCVE(keyword=searchWord, exactMatch = False)
+    cve_item = nvdlib.searchCVE(keywordSearch=searchWord, keywordExactMatch = False)
 
     for each in cve_item:        
         print('Potential threat: ',each.id)
@@ -17,7 +28,7 @@ def checkCVE(searchWord):
 # Second check for testing
 def checkCVE2():
     # r = nvdlib.searchCVE(cpeName = 'cpe:2.3:a:microsoft:exchange_server:2013:cumulative_update_11:*:*:*:*:*:*', keyword = '1ArcServe', )
-    cve_item = nvdlib.searchCVE(keyword = 'httpd 2.4.50', exactMatch = False)
+    cve_item = nvdlib.searchCVE(keywordSearch = 'httpd 2.4.50', keywordExactMatch = False)
     dict = []
     dict.append(cve_item)
     for each in cve_item:
@@ -116,7 +127,7 @@ def pulldocker(docekrcontainer):
  
 
 # checkCVE('httpd 2.4.50')
-# check = readDockerFile("/Users/timurzhunusov/Downloads/vulhub-master/httpd/CVE-2021-42013/Dockerfile")
+# check = readDockerFile("/Users/zta/Documents/GitHub/EC601_Project1/Scripts/dockerfile_examples/CVE-2021-41773/")
 # check = readDockerFile("/Users/timurzhunusov/Documents/GitHub/EC601/Scripts/dockerfile_examples/CentosHttpd")
 # /Users/timurzhunusov/Downloads/vulhub-master/base/php/5.4.1/cgi/
 
@@ -125,6 +136,7 @@ def pulldocker(docekrcontainer):
 
 
 def main():
+    # checkCVE2()
     print("Please press a for scaning a folder")
     print("Please press b for scanning dockerhub container")
     x = input()
@@ -142,6 +154,8 @@ def main():
             final_path = (path+dockerfile)
             check = readDockerFile(final_path)
             checkCVE(check)
+            print("Search for secrets:")
+            os.system('ggshield secret scan --show-secrets path --recursive "%s"' % path)
         else:
             print("Couldnt find Dockerfile in directory",path);
     if x == "b":
@@ -149,8 +163,11 @@ def main():
         container = input()
 
         pulldocker(container)
-    # if (x != "a") or (x != "b"):
-    #     print("Something went wrong :(")
+        print("Search for secrets:")
+        os.system('ggshield secret scan docker "%s"' % container)
+        
+
+        
 
 if __name__ == '__main__':
  main()

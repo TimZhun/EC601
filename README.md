@@ -7,6 +7,14 @@ NVDLIB library<br />
 - pip install nvdlib<br />
 run NCIS.py python script
 
+**Example**
+Checking for docker folder on loacl machine
+![enter image description here](https://github.com/TimZhun/EC601_Project1/blob/main/images/example1.gif?raw=true)
+
+**Example**
+Checking for docker container from dockerhub
+![enter image description here](https://github.com/TimZhun/EC601_Project1/blob/main/images/example2.gif?raw=true)
+
 **Problem Statement/Applications**
 
 The simplest way to explain DevOps, is to imagine it as the idea to help people work together in a convenient way by building and deploying secure software at top speed. DevOps practices enable software developers (devs) and operations (ops) teams to accelerate delivery through automation, collaboration, fast feedback, and iterative improvement [[1]](**[https://about.gitlab.com/topics/devops/](https://about.gitlab.com/topics/devops/)**). It is achieved by refactoring the old monlyth model of development to microservices and cloud-computing. To elaborate, DevOps is not a single tool it is a set of different tools that each team chooses depending on a project that helps them deploy faster. One of the popular examples is Docker, Jenkins, Git, Kubernetes, Ansible, Selenium, ELK, Nagios etc. 

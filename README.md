@@ -2,6 +2,7 @@
 
 Docker version 4 or higher<br />
 Python version 3<br />
+GitGuardian<br />
 NVDLIB library<br />
 - pip install nvdlib<br />
 run NCIS.py python script
